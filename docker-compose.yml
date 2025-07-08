@@ -1,0 +1,53 @@
+ 
+version: '3.8'
+services:
+  db:
+    build:
+      context: ./database
+    environment:
+      # Use environment variables set in .env file or use place-holder defaults
+      MYSQL_ROOT_PASSWORD: ${DATABASE_PASSWORD:-3900banana}
+      MYSQL_DATABASE: ${DATABASE_NAME:-sdgdb}
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  web:
+    build:
+      context: ./backend
+    depends_on:
+      - db
+    environment:
+      # Use environment variables set in .env file or use place-holder defaults
+      DATABASE_HOST: ${DATABASE_HOST:-db}
+      DATABASE_NAME: ${DATABASE_NAME:-sdgdb}
+      DATABASE_USER: ${DATABASE_USER:-root}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD:-3900banana}
+      DEBUG: "True"
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/backend
+    working_dir: /backend/app
+    # add time for db to initialise, can maybe add a script for this later
+    command: sh -c "sleep 20 && python manage.py migrate --fake-initial --noinput && python manage.py runserver 0.0.0.0:8000"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dev-Dockerfile
+    environment:
+      CHOKIDAR_USEPOLLING: true
+      WATCHPACK_POLLING: true
+    ports:
+      - "3000:3000"
+    volumes:
+        # read only flag
+      - ./frontend:/frontend
+      - /frontend/node_modules
+    depends_on:
+      - web
+
+volumes:
+  mysql_data:
