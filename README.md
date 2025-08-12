@@ -1,4 +1,4 @@
-# Cloud-Deployed Website: https://comp3900-frontend-843953114718.australia-southeast1.run.app/
+# Cloud-Deployed Website: (Currently undeployed since Google Cloud doubled its prices, redeploying in September on a different platform) 
 
 # Technologies Used
 - **MySQL**: Relational database for structured data storage.
@@ -48,27 +48,3 @@ are able to be used in cloud deployment.
 For the frontend service, refer to the Prod-Dockerfile for a production-optimised
 build.
 
-# Directly Querying the MySQL Database
-Enter the following command to connect to the database Docker container:
-```
-docker exec -it capstone-project-2025-t1-25t1-3900-h12b-banana-db-1 mysql -u root -p
-```
-The default password is `3900banana`.
-
-To change the password of the database after it has been created, use the following
-commands:
-```
-docker exec -it capstone-project-2025-t1-25t1-3900-h12b-banana-db-1 mysql -u root -p
-ALTER USER 'root'@'localhost' IDENTIFIED WITH caching_sha2_password BY '<YOUR_NEW_PASSWORD>';
-FLUSH PRIVILEGES;
-quit
-```
-
-# Running Django Migrations
-All existing models in the Django backend have had migrations created.
-
-If any updates to a model are made, please run the following commands:
-```
-docker exec -it capstone-project-2025-t1-25t1-3900-h12b-banana-web-1 python manage.py makemigrations <affected-django-app>
-docker exec -it capstone-project-2025-t1-25t1-3900-h12b-banana-web-1 python manage.py migrate --fake-initial
-```
